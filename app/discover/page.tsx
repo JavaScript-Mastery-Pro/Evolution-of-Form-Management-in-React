@@ -1,11 +1,13 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import React from "react";
-
 import UseOptimisticForm from "./form";
+import { getConfessions } from "@/lib/appwrite";
 
 async function Page() {
-  // TODO: Get all confessions Promise from Appwrite
+  const allConfessions = getConfessions();
 
-  return <UseOptimisticForm />;
+  // @ts-ignore
+  return <UseOptimisticForm confessionPromise={allConfessions} />;
 }
 
 export default Page;

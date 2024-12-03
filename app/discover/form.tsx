@@ -10,23 +10,42 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Weapons } from "@/lib/utils";
+import { cn, Weapons } from "@/lib/utils";
 import { createConfession } from "@/lib/appwrite";
 import { Button } from "@/components/ui/button";
+import { use, useOptimistic } from "react";
+import { ConfessionItem } from "@/components/confessions";
 
-// TODO: Define Optimistic Confession so we can track the sending state
+type OptimistiConfesssion = Confession & { sending?: boolean };
 
-function UseOptimisticForm() {
-  // TODO: Implement use hook
+function UseOptimisticForm({
+  confessionPromise,
+}: {
+  confessionPromise: Promise<Confession[]>;
+}) {
+  const confessions = use(confessionPromise);
 
-  // TODO: Implement useOptimistic hook
+  const [optimisticConfessions, addOptimisticConfession] = useOptimistic(
+    confessions,
+    (currentState, optimisticValue: OptimistiConfesssion) => {
+      return [optimisticValue, ...currentState];
+    }
+  );
 
   async function formAction(formData: FormData) {
     const name = formData.get("name") as string;
     const weapon = formData.get("weapon") as string;
     const confession = formData.get("confession") as string;
 
-    // TODO: Add the new confession optimistically
+    const newConfession = {
+      $id: Date.now().toString(),
+      name,
+      weapon,
+      confession,
+      sending: true,
+    };
+
+    addOptimisticConfession(newConfession);
 
     try {
       await createConfession(name, weapon, confession);
@@ -106,7 +125,21 @@ function UseOptimisticForm() {
       <section className="my-10 flex gap-5 flex-col">
         <h3 className="text-2xl font-bold">All Confessions</h3>
 
-        {/* TODO: Render all confessions */}
+        {optimisticConfessions.map((confession: OptimistiConfesssion) => (
+          <div
+            key={confession.$id}
+            className={cn(
+              "transition-opacity duration-300",
+              confession?.sending ? "opacity-50 animate-pulse" : "opacity-100"
+            )}
+          >
+            <ConfessionItem
+              name={confession.name}
+              weapon={confession.weapon}
+              confession={confession.confession}
+            />
+          </div>
+        ))}
       </section>
     </>
   );
