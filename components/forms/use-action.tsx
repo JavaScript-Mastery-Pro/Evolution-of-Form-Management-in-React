@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Select,
   SelectContent,
@@ -11,11 +13,12 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { createConfession } from "@/lib/appwrite";
 import { Weapons } from "@/lib/utils";
+import { useActionState } from "react";
+import { toast } from "@/hooks/use-toast";
+import { RefreshCcw } from "lucide-react";
 
-// TODO: Modify to submit confession
-async function formAction(formData: FormData) {
-  "use server";
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function submitConfession(prevState: any, formData: FormData) {
   const name = formData.get("name") as string;
   const weapon = formData.get("weapon") as string;
   const confession = formData.get("confession") as string;
@@ -23,13 +26,36 @@ async function formAction(formData: FormData) {
   try {
     const result = await createConfession(name, weapon, confession);
     if (!result) throw new Error("Failed to create confession");
+
+    toast({
+      title: "Confession submitted successfully!",
+      description: "Your secret is safe with us.",
+    });
+
+    return { success: true };
   } catch (error: unknown) {
-    console.log(error);
+    const errorMessage =
+      error instanceof Error ? error.message : "An unknown error occurred";
+
+    toast({
+      title: "Something went wrong.",
+      description: errorMessage,
+      variant: "destructive",
+    });
+
+    return {
+      success: false,
+      error: errorMessage,
+    };
   }
 }
 
 function UseActionStateForm() {
-  // TODO: Implement useActionState hook
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [state, formAction, isPending] = useActionState(
+    submitConfession,
+    undefined
+  );
 
   return (
     <form
@@ -85,15 +111,16 @@ function UseActionStateForm() {
           required
         />
       </div>
-      {/* TODO: Implement pending state */}
       <div className="flex justify-end space-x-4">
         <Button type="reset" variant="outline" className="px-8">
           Clear
         </Button>
         <Button
           type="submit"
+          disabled={isPending}
           className="bg-black hover:bg-gray-800 text-white px-8"
         >
+          {isPending && <RefreshCcw className="mr-1 h-4 w-4 animate-spin" />}
           Submit
         </Button>
       </div>
