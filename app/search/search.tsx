@@ -1,24 +1,32 @@
 "use client";
 
-import { useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useState, useTransition } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { SearchIcon } from "lucide-react";
 
 export default function Search() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const [searchQuery, setSearchQuery] = useState(
     searchParams.get("query") || ""
   );
 
-  // TODO: Implement useTransition hook
-  const isPending = false;
+  const [isPending, startTransition] = useTransition();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // TODO: Implement transition
+    startTransition(() => {
+      const params = new URLSearchParams(searchParams);
+      if (searchQuery) {
+        params.set("query", searchQuery);
+      } else {
+        params.delete("query");
+      }
+      router.push(`?${params.toString()}`);
+    });
   };
 
   return (
