@@ -1,17 +1,31 @@
 "use client";
 
-import { useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useDeferredValue, useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+
 import { Weapons } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
 export default function Filter() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const [selectedFilter, setSelectedFilter] = useState<string | null>(
     searchParams.get("filter")
   );
 
-  // TODO: Implement useDeferredValue
+  const deferredFilter = useDeferredValue(selectedFilter);
+
+  useEffect(() => {
+    if (deferredFilter !== searchParams.get("filter")) {
+      const newParams = new URLSearchParams(searchParams.toString());
+      if (deferredFilter) {
+        newParams.set("filter", deferredFilter);
+      } else {
+        newParams.delete("filter");
+      }
+      router.push(`?${newParams.toString()}`);
+    }
+  }, [deferredFilter, router, searchParams]);
 
   const handleFilterClick = (weapon: string) => {
     setSelectedFilter((prevFilter) => (prevFilter === weapon ? null : weapon));
