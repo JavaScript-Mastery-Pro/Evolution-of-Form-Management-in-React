@@ -7,11 +7,11 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 
 import { Weapons } from "@/lib/utils";
 import { createConfession } from "@/lib/appwrite";
+import Submit from "./submit";
 
 async function formAction(formData: FormData) {
   "use server";
@@ -87,18 +87,7 @@ function UseFormStatusForm() {
         />
       </div>
 
-      {/* TODO: Separate the form buttons to use useFormStatus */}
-      <div className="flex justify-end space-x-4">
-        <Button type="reset" variant="outline" className="px-8">
-          Clear
-        </Button>
-        <Button
-          type="submit"
-          className="bg-black hover:bg-gray-800 text-white px-8"
-        >
-          Submit
-        </Button>
-      </div>
+      <Submit />
     </form>
   );
 }

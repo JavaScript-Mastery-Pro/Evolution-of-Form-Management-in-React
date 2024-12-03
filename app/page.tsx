@@ -1,10 +1,10 @@
 import Confessions from "@/components/confessions";
-import ServerForm from "@/components/forms/server-form";
+import UseFormStatusForm from "@/components/forms/use-form-status";
 
 function Home() {
   return (
     <div className="mt-5">
-      <ServerForm />
+      <UseFormStatusForm />
       <Confessions />
     </div>
   );
