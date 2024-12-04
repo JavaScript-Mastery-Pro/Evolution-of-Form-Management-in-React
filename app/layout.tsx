@@ -1,21 +1,8 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import localFont from "next/font/local";
 import "./globals.css";
 
 import { Toaster } from "@/components/ui/toaster";
-
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
 
 export const metadata: Metadata = {
   title: "Evolution of form management in React",
@@ -29,9 +16,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className="antialiased">
         <main className="flex flex-col max-w-3xl mx-auto min-h-screen p-5">
           <nav className="bg-white py-3">
             <Link href="/" className="text-black font-medium text-xl">
@@ -40,7 +25,7 @@ export default function RootLayout({
           </nav>
 
           <section className="my-5 text-center">
-            <div className="inline-block p-6 rounded-2xl bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 shadow-lg relative overflow-hidden w-full">
+            <div className="inline-block px-6 py-12 bg-black bg-hero bg-cover bg-center-bottom rounded-2xl shadow-lg relative overflow-hidden w-full">
               <h1 className="text-3xl md:text-4xl font-extrabold text-white mb-2 relative z-10">
                 Code Confessions
               </h1>
